@@ -1,0 +1,28 @@
+---
+# tasks file for dbwebapp_services
+- name: Start DB service
+  service:
+    name: mysqld
+    state: started
+  register: dbstatus
+  notify: start_db
+
+- name: Start App service
+  service:
+    name: chronyd
+    state: started
+  register: appstatus
+  when: dbstatus.failed == false
+  notify: reload_app
+
+- name: Start Webservice
+  service:
+    name: httpd
+    state: started
+  register: webstatus
+  when: appstatus.failed == false
+  notify: reload_web
+
+
+
+

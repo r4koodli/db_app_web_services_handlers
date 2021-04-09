@@ -1,0 +1,24 @@
+---
+# handlers file for dbwebapp_services
+
+- name: start_dbservice
+  service:
+    name: mysqld
+    state: started
+  when: dbstatus.stopped == true
+
+- name: restart App service
+  service:
+    name: chronyd
+    state: restarted
+  when: (dbstatus.failed == false and appstatus.failed == true)
+
+- name: Start Webservice
+  service:
+    name: httpd
+    state: restarted
+  register: webstatus
+  when: (appstatus.failed == false and webstatus.failed == true)
+  
+
+
