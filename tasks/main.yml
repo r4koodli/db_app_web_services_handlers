@@ -2,26 +2,27 @@
 # tasks file for dbwebapp_services
 - name: Start DB service
   service:
-    name: mysqld
+    name: mysqld        #MySql service
     state: started
-  register: dbstatus
-  notify: start_db
+  register: dbstatus    #To validate the state and to run the next service as per the order
+  notify: start_db      #To Check status of the service and start if it is stopped
 
 - name: Start App service
   service:
-    name: chronyd
+    name: chronyd               #NTP time service
     state: started
   register: appstatus
-  when: dbstatus.failed == false
-  notify: reload_app
+  when: dbstatus.failed == false      #In order to start the service only if DB service is already running
+  notify: reload_app      #To Check status of the service and restart the service
 
 - name: Start Webservice
   service:
     name: httpd
     state: started
   register: webstatus
-  when: appstatus.failed == false
+  when: appstatus.failed == false     #In order to start the service only if App service is already running
   notify: reload_web
+
 
 
 
