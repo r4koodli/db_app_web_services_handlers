@@ -5,20 +5,22 @@
   service:
     name: mysqld
     state: started
-  when: dbstatus.stopped == true
+    run_once: true  #As not advisible to retart or start the service everytime playbook is executed
+  when: dbstatus.stopped == true #Execute only if the services is stopped
 
 - name: restart App service
   service:
     name: chronyd
     state: restarted
-  when: (dbstatus.failed == false and appstatus.failed == true)
+  when: (dbstatus.failed == false and appstatus.failed == true) #Restart only if DB service is running and App service is stopped
 
 - name: Start Webservice
   service:
     name: httpd
     state: restarted
   register: webstatus
-  when: (appstatus.failed == false and webstatus.failed == true)
+  when: (appstatus.failed == false and webstatus.failed == true) # #Restart only if DB & App service is running and Web service is stopped
+
   
 
 
