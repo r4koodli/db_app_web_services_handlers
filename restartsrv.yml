@@ -1,0 +1,6 @@
+---
+- name: Restart Services in order
+  hosts: node2
+  become: yes
+  roles:
+    - /home/{{ ansible_user_id }}/dbwebapp_services
